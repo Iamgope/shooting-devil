@@ -1,7 +1,8 @@
+
 import pygame
 import random
 import math
-
+from pygame import mixer
 # initialize pygame
 pygame.init()
 
@@ -11,6 +12,10 @@ screen = pygame.display.set_mode((800, 600))
 
 # background
 background = pygame.image.load('Back.png')
+#music
+mixer.music.load("background.wav")
+mixer.music.play(-1)
+
 pygame.display.set_caption("kya_kiye_Koot_diye")
 icon = pygame.image.load('icon.png')
 pygame.display.set_icon(icon)
@@ -43,7 +48,15 @@ webY_change = 5
 web_state = "ready"  # ready is not in motion
 
 #score
-score=0
+score_value = 0
+font = pygame.font.Font('freesansbold.ttf', 32)
+
+textX=10
+textY=10
+
+def showScore(x,y):
+    score = font.render("Score : " + str(score_value), True, (255, 255, 255))
+    screen.blit(score, (x, y))
 
 def player(x, y):
     screen.blit(playerImg, (x, y))
@@ -84,11 +97,13 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                playerX_change = 3
+                playerX_change = 6
             if event.key == pygame.K_LEFT:
-                playerX_change = -3
+                playerX_change = -6
             if event.key == pygame.K_SPACE:
                 if web_state is "ready":
+                    bulletSound = mixer.Sound("web.wav")
+                    bulletSound.play()
                     webX = playerX
                     fire_web(playerX, webY)
         if event.type == pygame.KEYUP:
@@ -113,8 +128,8 @@ while running:
         if collision:
             webY = 500
             web_state = "ready"
-            score += 1
-            print(score)
+            score_value += 1
+            #print(score)
             enemyX[i]= random.randint(0, 700)
             enemyY[i] = random.randint(50, 150)
         enemy(enemyX[i], enemyY[i],i)
@@ -131,5 +146,5 @@ while running:
 
 
     player(playerX, playerY)
-
+    showScore(textX,textY)
     pygame.display.update()
